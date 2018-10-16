@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --watchAll --setupTestFrameworkScriptFile=./test/setupTestFramework.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "jasmine-fail-fast": "^2.0.0",
     "jest": "^23.6.0"
   }
 }

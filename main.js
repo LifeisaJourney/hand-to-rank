@@ -1,15 +1,17 @@
-// This function should return an integer representation of the hand:
-//  - High card: 1 - 13, based on face value (J = 10, Q = 11, K = 12, A = 13)
-//  - 14 - Pair of 2s
-//  - 15 - Pair or 3s
-//  - ...
-//  - 22 - Pair of 10s
-//  - 23 - Pair of Js
-//  - 24 - Pair of Qs
-//  - 25 - Pair of Ks
-handToRank = (hand) => {
-
-    let cardValueHashmap = {
+// This function returns an integer representation of the hand.
+// The first number is the high-level hand: 
+//  9 - Royal Flush
+//  8 - Straight Flush
+//  7 - 4 of a Kind 
+//  6 - Full House
+//  5 - Flush
+//  4 - Straight
+//  3 - 3 of a Kind
+//  2 - 2 pairs
+//  1 - 1 pair
+//  0 - High Card
+// Then after that the values in priority order of the rest of the cards
+let cardValueHashmap = {
         2: 1,
         3: 2,
         4: 3,
@@ -24,6 +26,21 @@ handToRank = (hand) => {
         K: 12,
         A: 13
     }
+
+const sortHand = (hand) => {
+    hand = [...hand];
+    hand.sort((a,b) => {
+        const cardValueA= cardValueHashmap[a.rank];
+        const cardValueB= cardValueHashmap[b.rank];
+
+        return cardValueB-cardValueA;
+    })
+    return hand;
+}
+
+const handToRank = (hand) => {
+
+    
     // Pair
     for (let card in hand) {
         const cardValue = cardValueHashmap[card];
@@ -33,16 +50,14 @@ handToRank = (hand) => {
     }
 
     // High card 
-    let highestNum = 0
-    for (card in hand) {
-        let cardValue = cardValueHashmap[card]
-        if (cardValue > highestNum) {
-
-            highestNum = cardValue
-        }
+    let handRank = "0";
+    const sortedHand = sortHand(hand);
+    for (let card of sortedHand) {
+        let cardValue = cardValueHashmap[card.rank];
+        handRank += cardValue.toString().padStart(2, "0");
     }
 
-    return highestNum
+    return handRank;
 }
 
-module.exports = handToRank
+module.exports = {handToRank, sortHand}
