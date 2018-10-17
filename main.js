@@ -12,52 +12,75 @@
 //  0 - High Card
 // Then after that the values in priority order of the rest of the cards
 let cardValueHashmap = {
-        2: 1,
-        3: 2,
-        4: 3,
-        5: 4,
-        6: 5,
-        7: 6,
-        8: 7,
-        9: 8,
-        10: 9,
-        J: 10,
-        Q: 11,
-        K: 12,
-        A: 13
-    }
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    J: 11,
+    Q: 12,
+    K: 13,
+    A: 14
+};
+
+const cardToValue = (card) =>{
+  const value = cardValueHashmap[card]
+  return value;
+}
 
 const sortHand = (hand) => {
     hand = [...hand];
     hand.sort((a,b) => {
-        const cardValueA= cardValueHashmap[a.rank];
-        const cardValueB= cardValueHashmap[b.rank];
+        const cardValueA = cardToValue(a.rank);
+        const cardValueB = cardToValue(b.rank);
 
-        return cardValueB-cardValueA;
+        return cardValueB - cardValueA;
     })
     return hand;
 }
 
-const handToRank = (hand) => {
+const handToString = hand => {
+    let str = '';
+    const sortedHand = sortHand(hand);
+    for (let card of sortedHand) {
+        let cardValue = cardToValue(card.rank);
+        str += cardValue.toString().padStart(2, "0");
+    }
+    return str;
+}
 
-    
-    // Pair
-    for (let card in hand) {
-        const cardValue = cardValueHashmap[card];
-        if (hand[card] === 2) {
-            return cardValue + 13;
+const handToRank = (hand) => {
+    // Check for pair
+    const rankFrequency = handToRankFrequency(hand);
+    for (let rank in rankFrequency) {
+        if (rankFrequency[rank] === 2) {
+            let handRank = "1";
+            return handRank + handToString(hand);
         }
     }
 
     // High card 
     let handRank = "0";
-    const sortedHand = sortHand(hand);
-    for (let card of sortedHand) {
-        let cardValue = cardValueHashmap[card.rank];
-        handRank += cardValue.toString().padStart(2, "0");
-    }
-
-    return handRank;
+    return handRank + handToString(hand);
 }
 
-module.exports = {handToRank, sortHand}
+const handToRankFrequency = (hand) => {
+    const rankFrequency = {};
+    for (let card of hand) {
+        if (rankFrequency[card.rank]) {
+            rankFrequency[card.rank] += 1
+        } else {
+            rankFrequency[card.rank] = 1;
+        }
+    }
+
+    return rankFrequency;
+
+}
+
+
+module.exports = {handToRank, sortHand, cardToValue, handToRankFrequency}

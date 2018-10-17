@@ -1,4 +1,4 @@
-const { sortHand, handToRank } = require('./main');
+const { sortHand, handToRank, cardToValue, handToRankFrequency } = require('./main');
 
 test('sortHand', () => {
     expect(
@@ -42,6 +42,12 @@ test('sortHand should not change the original hand', () => {
     )
 })
 
+test('cardToValue converts a card to a value', () => {
+    expect(
+        cardToValue('J')
+    ).toBe(11);
+});
+
 test('returns a 00605030201 for a hand including 2, 3, 4, 6, 7', () => {
     expect(
         handToRank([
@@ -52,52 +58,39 @@ test('returns a 00605030201 for a hand including 2, 3, 4, 6, 7', () => {
             { suit: 'diamonds', rank: '7'},
         ])
     ).toBe(
-        "00605030201"
+        "00706040302"
     );
 });
 
-test( 'returns a 10 for a hand including 10, 9, 8, 7, 5', () => {
+test('handToRankFrequency converts a hand to an object of rank frequency', () => {
     expect(
-        handToRank({
-            10: 1,
-            9: 1,
-            8: 1,
-            7: 1,
-            5: 1
-        })
-    ).toBe(9);
-});
-
-test( 'when the high card is a face card', () => {
-    expect(
-        handToRank({
-            K: 1,
-            9: 1,
-            8: 1,
-            7: 1,
-            5: 1
-        })
-    ).toBe(12);
-});
-
-test( 'returns pair for hand including 2, 2, 3, 4, 5', () => {
-    expect(
-        handToRank({
-            2: 2,
+        handToRankFrequency([
+            { suit: 'diamonds', rank: '2'},
+            { suit: 'clubs', rank: '3'},
+            { suit: 'spades', rank: '4'},
+            { suit: 'diamonds', rank: '6'},
+            { suit: 'clubs', rank: '6'},
+        ])
+    ).toEqual(
+        {
+            2: 1,
             3: 1,
             4: 1,
-            5: 1
-        })
-    ).toBe(14);
+            6: 2
+        }
+    );
 });
 
-test( 'returns pair for hand including J, J, 3, 4, 5', () => {
+test('returns correctly for a pair in a hand', () => {
     expect(
-        handToRank({
-            J: 2,
-            3: 1,
-            4: 1,
-            5: 1
-        })
-    ).toBe(23);
+        handToRank([
+            { suit: 'diamonds', rank: '3'},
+            { suit: 'clubs', rank: '3'},
+            { suit: 'spades', rank: '4'},
+            { suit: 'diamonds', rank: '6'},
+            { suit: 'diamonds', rank: '7'},
+        ])
+    ).toBe(
+        "10706040303"
+    );
 });
