@@ -1,4 +1,4 @@
-const { sortHand, handToRank, cardToValue, handToRankFrequency } = require('./main');
+const { sortHand, handToValue, cardToValue, handToRankFrequency } = require('./main');
 
 test('sortHand', () => {
     expect(
@@ -50,7 +50,7 @@ test('cardToValue converts a card to a value', () => {
 
 test('returns a 00605030201 for a hand including 2, 3, 4, 6, 7', () => {
     expect(
-        handToRank([
+        handToValue([
             { suit: 'diamonds', rank: '2'},
             { suit: 'clubs', rank: '3'},
             { suit: 'spades', rank: '4'},
@@ -83,7 +83,7 @@ test('handToRankFrequency converts a hand to an object of rank frequency', () =>
 
 test('returns correctly for a pair in a hand', () => {
     expect(
-        handToRank([
+        handToValue([
             { suit: 'diamonds', rank: '3'},
             { suit: 'clubs', rank: '3'},
             { suit: 'spades', rank: '4'},
@@ -92,5 +92,33 @@ test('returns correctly for a pair in a hand', () => {
         ])
     ).toBe(
         "10706040303"
+    );
+});
+
+test('returns correctly for two pair', () => {
+    expect(
+        handToValue([
+            { suit: 'diamonds', rank: 'J'},
+            { suit: 'clubs', rank: 'J'},
+            { suit: 'spades', rank: 'A'},
+            { suit: 'diamonds', rank: 'A'},
+            { suit: 'diamonds', rank: '7'},
+        ])
+    ).toBe(
+        "21414111107"
+    );
+});
+
+test('returns correctly for three of a kind', () => {
+    expect(
+        handToValue([
+            { suit: 'diamonds', rank: 'J'},
+            { suit: 'clubs', rank: 'J'},
+            { suit: 'spades', rank: 'J'},
+            { suit: 'diamonds', rank: 'A'},
+            { suit: 'diamonds', rank: '7'},
+        ])
+    ).toBe(
+        "31411111107"
     );
 });

@@ -53,19 +53,32 @@ const handToString = hand => {
     return str;
 }
 
-const handToRank = (hand) => {
-    // Check for pair
+const handToValue = (hand) => {
+    let baseValue = 0;
     const rankFrequency = handToRankFrequency(hand);
+
+    // Check for three of a kind
     for (let rank in rankFrequency) {
-        if (rankFrequency[rank] === 2) {
-            let handRank = "1";
-            return handRank + handToString(hand);
+        if (rankFrequency[rank] === 3) {
+            baseValue = 3;
         }
     }
 
-    // High card 
-    let handRank = "0";
-    return handRank + handToString(hand);
+    // Check for pair
+    let numberOfPairs = 0;
+    for (let rank in rankFrequency) {
+        if (rankFrequency[rank] === 2) {
+            numberOfPairs += 1;
+        }
+    }
+
+    if (numberOfPairs === 1) {
+        baseValue = 1;
+    } else if (numberOfPairs === 2) {
+        baseValue = 2;
+    }
+
+    return baseValue + handToString(hand);
 }
 
 const handToRankFrequency = (hand) => {
@@ -83,4 +96,9 @@ const handToRankFrequency = (hand) => {
 }
 
 
-module.exports = {handToRank, sortHand, cardToValue, handToRankFrequency}
+module.exports = {
+    handToValue,
+    sortHand,
+    cardToValue,
+    handToRankFrequency
+};
