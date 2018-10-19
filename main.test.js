@@ -1,4 +1,4 @@
-const { sortHand, handToValue, cardToValue, handToRankFrequency } = require('./main');
+const { sortHand, handToValue, rankToValue, handToRankFrequency } = require('./main');
 
 test('sortHand', () => {
     expect(
@@ -42,9 +42,9 @@ test('sortHand should not change the original hand', () => {
     )
 })
 
-test('cardToValue converts a card to a value', () => {
+test('rankToValue converts a rank to a value', () => {
     expect(
-        cardToValue('J')
+        rankToValue('J')
     ).toBe(11);
 });
 
@@ -120,5 +120,47 @@ test('returns correctly for three of a kind', () => {
         ])
     ).toBe(
         "31411111107"
+    );
+});
+
+test('returns correctly for a straight', () => {
+    expect(
+        handToValue([
+            { suit: 'diamonds', rank: '5'},
+            { suit: 'clubs', rank: '3'},
+            { suit: 'spades', rank: '4'},
+            { suit: 'diamonds', rank: '2'},
+            { suit: 'diamonds', rank: '6'},
+        ])
+    ).toBe(
+        "40605040302"
+    );
+});
+
+test('returns correctly for a flush', () => {
+    expect(
+        handToValue([
+            { suit: 'diamonds', rank: '5'},
+            { suit: 'diamonds', rank: '4'},
+            { suit: 'diamonds', rank: 'Q'},
+            { suit: 'diamonds', rank: 'A'},
+            { suit: 'diamonds', rank: '6'},
+        ])
+    ).toBe(
+        "51412060504"
+    );
+});
+
+test('a flush that is also a straight should return a flush', () => {
+    expect(
+        handToValue([
+            { suit: 'diamonds', rank: '10'},
+            { suit: 'diamonds', rank: '9'},
+            { suit: 'diamonds', rank: '8'},
+            { suit: 'diamonds', rank: '7'},
+            { suit: 'diamonds', rank: '6'},
+        ])
+    ).toBe(
+        "51009080706"
     );
 });

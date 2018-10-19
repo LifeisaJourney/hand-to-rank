@@ -11,7 +11,7 @@
 //  1 - 1 pair
 //  0 - High Card
 // Then after that the values in priority order of the rest of the cards
-let cardValueHashmap = {
+let rankValueHashmap = {
     2: 2,
     3: 3,
     4: 4,
@@ -27,16 +27,16 @@ let cardValueHashmap = {
     A: 14
 };
 
-const cardToValue = (card) =>{
-  const value = cardValueHashmap[card]
-  return value;
+const rankToValue = (rank) => {
+    const value = rankValueHashmap[rank]
+    return value;
 }
 
 const sortHand = (hand) => {
     hand = [...hand];
-    hand.sort((a,b) => {
-        const cardValueA = cardToValue(a.rank);
-        const cardValueB = cardToValue(b.rank);
+    hand.sort((a, b) => {
+        const cardValueA = rankToValue(a.rank);
+        const cardValueB = rankToValue(b.rank);
 
         return cardValueB - cardValueA;
     })
@@ -47,15 +47,44 @@ const handToString = hand => {
     let str = '';
     const sortedHand = sortHand(hand);
     for (let card of sortedHand) {
-        let cardValue = cardToValue(card.rank);
+        let cardValue = rankToValue(card.rank);
         str += cardValue.toString().padStart(2, "0");
     }
     return str;
 }
 
+const handHasFlush = hand => {
+    return (
+        hand[0].suit === hand[1].suit &&
+        hand[1].suit === hand[2].suit &&
+        hand[2].suit === hand[3].suit &&
+        hand[3].suit === hand[4].suit
+    );
+};
+
+const handHasStraight = hand => {
+    const sortedHand = sortHand(hand);
+    let arrayOfRank = [];
+    for (let card of sortedHand) {
+        arrayOfRank.push(rankToValue(card.rank));
+    }
+    return (arrayOfRank[0] - arrayOfRank[1] === 1 && arrayOfRank[1] - arrayOfRank[2] === 1
+        && arrayOfRank[2] - arrayOfRank[3] === 1 && arrayOfRank[3] - arrayOfRank[4] === 1);
+}
+
 const handToValue = (hand) => {
     let baseValue = 0;
     const rankFrequency = handToRankFrequency(hand);
+
+    // check for a flush
+    if (handHasFlush(hand)) {
+        baseValue = 5;
+    }
+
+    // check for straight
+    else if (handHasStraight(hand)) {
+        baseValue = 4;
+    }
 
     // Check for three of a kind
     for (let rank in rankFrequency) {
@@ -99,6 +128,6 @@ const handToRankFrequency = (hand) => {
 module.exports = {
     handToValue,
     sortHand,
-    cardToValue,
+    rankToValue,
     handToRankFrequency
 };
