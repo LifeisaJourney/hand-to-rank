@@ -164,3 +164,17 @@ test('a flush that is also a straight should return a flush', () => {
         "51009080706"
     );
 });
+
+test('full house', () => {
+    expect(
+        handToValue([
+            { suit: 'diamonds', rank: '10'},
+            { suit: 'diamonds', rank: '9'},
+            { suit: 'clubs', rank: '10'},
+            { suit: 'clubs', rank: '9'},
+            { suit: 'spades', rank: '10'},
+        ])
+    ).toBe(
+        "61010100909"
+    );
+});

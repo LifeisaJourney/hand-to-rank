@@ -68,43 +68,54 @@ const handHasStraight = hand => {
     for (let card of sortedHand) {
         arrayOfRank.push(rankToValue(card.rank));
     }
-    return (arrayOfRank[0] - arrayOfRank[1] === 1 && arrayOfRank[1] - arrayOfRank[2] === 1
-        && arrayOfRank[2] - arrayOfRank[3] === 1 && arrayOfRank[3] - arrayOfRank[4] === 1);
+    return (
+        arrayOfRank[0] - arrayOfRank[1] === 1 &&
+        arrayOfRank[1] - arrayOfRank[2] === 1 &&
+        arrayOfRank[2] - arrayOfRank[3] === 1 &&
+        arrayOfRank[3] - arrayOfRank[4] === 1
+    );
+}
+
+const handHasFullHouse = hand => {
+    const rankFrequency = handToRankFrequency(hand);
+    const frequencyValues = Object.values(rankFrequency);
+    return (
+        (frequencyValues[0] === 2 && frequencyValues[1] === 3) ||
+        (frequencyValues[0] === 3 && frequencyValues[1] === 2)
+    );
 }
 
 const handToValue = (hand) => {
     let baseValue = 0;
     const rankFrequency = handToRankFrequency(hand);
 
-    // check for a flush
-    if (handHasFlush(hand)) {
+    if (handHasFullHouse(hand)) {
+        baseValue = 6;
+    } else if (handHasFlush(hand)) {
         baseValue = 5;
-    }
-
-    // check for straight
-    else if (handHasStraight(hand)) {
+    } else if (handHasStraight(hand)) {
         baseValue = 4;
-    }
-
-    // Check for three of a kind
-    for (let rank in rankFrequency) {
-        if (rankFrequency[rank] === 3) {
-            baseValue = 3;
+    } else {
+        // Check for three of a kind
+        for (let rank in rankFrequency) {
+            if (rankFrequency[rank] === 3) {
+                baseValue = 3;
+            }
         }
-    }
 
-    // Check for pair
-    let numberOfPairs = 0;
-    for (let rank in rankFrequency) {
-        if (rankFrequency[rank] === 2) {
-            numberOfPairs += 1;
+        // Check for pair
+        let numberOfPairs = 0;
+        for (let rank in rankFrequency) {
+            if (rankFrequency[rank] === 2) {
+                numberOfPairs += 1;
+            }
         }
-    }
 
-    if (numberOfPairs === 1) {
-        baseValue = 1;
-    } else if (numberOfPairs === 2) {
-        baseValue = 2;
+        if (numberOfPairs === 1) {
+            baseValue = 1;
+        } else if (numberOfPairs === 2) {
+            baseValue = 2;
+        }
     }
 
     return baseValue + handToString(hand);
